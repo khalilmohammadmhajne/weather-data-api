@@ -2,7 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql2");
 
 const config = {
-  connectionLimit: 4,
+  connectionLimit: 10,
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT,
   user: process.env.DB_USER || 'root',
