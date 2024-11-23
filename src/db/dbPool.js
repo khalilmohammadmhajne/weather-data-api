@@ -5,7 +5,7 @@ const config = {
   connectionLimit: 4,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
-  user: process.env.DB_USER,
+  user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 };
