@@ -3,7 +3,7 @@ const mysql = require("mysql2");
 
 const config = {
   connectionLimit: 4,
-  host: process.env.DB_HOST,
+  host: process.env.DB_HOST || 'lcoalhost',
   port: process.env.DB_PORT,
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD,
