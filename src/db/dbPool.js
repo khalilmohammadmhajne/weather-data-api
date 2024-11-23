@@ -66,6 +66,7 @@ exports.execQuery = async function (query, bindings = []) {
   }
 };
 
+
 // Optionally, expose a simpler function for non-transaction queries
 exports.simpleQuery = async function (query, bindings = []) {
   try {
