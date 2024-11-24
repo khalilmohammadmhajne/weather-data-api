@@ -2,12 +2,12 @@ require("dotenv").config();
 const mysql = require("mysql2");
 
 const config = {
-  connectionLimit: 4,
-  host: process.env.DB_HOST,
+  connectionLimit: 10,
+  host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'root',
+  database: process.env.DB_NAME || 'weather_data_db',
 };
 
 const pool = mysql.createPool(config);
@@ -65,6 +65,7 @@ exports.execQuery = async function (query, bindings = []) {
     await conn.release();
   }
 };
+
 
 // Optionally, expose a simpler function for non-transaction queries
 exports.simpleQuery = async function (query, bindings = []) {
