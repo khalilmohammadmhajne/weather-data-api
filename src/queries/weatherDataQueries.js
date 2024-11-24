@@ -3,14 +3,14 @@ const { execQuery, simpleQuery } = require("../db/dbPool");
 // Function to insert weather data into the database
 exports.insertWeatherData = async function (batchId, forecast_time, batchData) {
   const query =
-    "INSERT INTO weather_data (latitude, longitude, temperature, humidity, precipitation_rate, forecast_time, batch_id) VALUES ?";
+    "INSERT IGNORE INTO weather_data (latitude, longitude, temperature, humidity, precipitation_rate, forecast_time, batch_id) VALUES ?";
   const bindings = batchData.map((item) => [
     item.latitude,
     item.longitude,
     item.temperature,
     item.humidity,
     item.precipitation_rate,
-    forecast_time,
+    new Date(forecast_time),
     batchId,
   ]);
 
@@ -18,19 +18,6 @@ exports.insertWeatherData = async function (batchId, forecast_time, batchData) {
     return await execQuery(query, [bindings]);
   } catch (err) {
     console.error("Error inserting weather data:", err.message);
-    throw err;
-  }
-};
-
-// Function to delete weather data for a specific batch
-exports.deleteWeatherData = async function (batchId) {
-  const query = "DELETE FROM weather_data WHERE batch_id = ?";
-  const bindings = [batchId];
-
-  try {
-    return await execQuery(query, bindings);
-  } catch (err) {
-    console.error("Error deleting weather data:", err.message);
     throw err;
   }
 };

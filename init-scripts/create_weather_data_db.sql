@@ -16,7 +16,6 @@ CREATE TABLE `batches` (
 -- Drop and create `weather_data` table
 DROP TABLE IF EXISTS `weather_data`;
 CREATE TABLE `weather_data` (
-  `id` int NOT NULL AUTO_INCREMENT,
   `batch_id` varchar(255) NOT NULL,
   `latitude` float NOT NULL,
   `longitude` float NOT NULL,
@@ -24,8 +23,7 @@ CREATE TABLE `weather_data` (
   `temperature` decimal(5,2) NOT NULL,
   `precipitation_rate` decimal(5,2) NOT NULL,
   `humidity` decimal(5,2) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `batch_id` (`batch_id`),
+  PRIMARY KEY `batch_id` (`batch_id`),
   KEY `latitude` (`latitude`),
   KEY `longitude` (`longitude`),
   KEY `forecast_time` (`forecast_time`),

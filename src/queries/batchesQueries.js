@@ -1,8 +1,20 @@
 const { execQuery, simpleQuery } = require("../db/dbPool");
 
 // Function to check if a batch exists
-exports.getCountBatches = async function (batchId) {
-  const query = "SELECT COUNT(*) FROM batches WHERE batch_id = ?";
+exports.getBatch = async function (batchId) {
+  const query = "SELECT * FROM batches WHERE batch_id = ?";
+  const bindings = [batchId];
+  try {
+    const result = await simpleQuery(query, bindings);
+    return result;
+  } catch (err) {
+    console.error("Error checking batch existence:", err.message);
+    throw err;
+  }
+};
+
+exports.getRunningBatch = async function (batchId) {
+  const query = "SELECT * FROM batches WHERE batch_id = ? and status = 'RUNNING'";
   const bindings = [batchId];
   try {
     const result = await simpleQuery(query, bindings);
@@ -29,7 +41,7 @@ exports.getAllBatches = async function () {
 exports.insertIntoBatches = async function (batchId, forecast_time, batchData) {
   const query =
     "INSERT INTO batches (batch_id, forecast_time, number_of_rows, status) VALUES (?, ?, ?, ?)";
-  const bindings = [batchId, forecast_time, batchData?.length || 0, "RUNNING"];
+  const bindings = [batchId, new Date(forecast_time), batchData?.length || 0, "RUNNING"];
   try {
     return await execQuery(query, bindings);
   } catch (err) {
@@ -39,9 +51,9 @@ exports.insertIntoBatches = async function (batchId, forecast_time, batchData) {
 };
 
 // Function to get the oldest active batch
-exports.getOldestActiveBatch = async function () {
+exports.getOldestActiveBatches = async function () {
   const query =
-    "SELECT batch_id FROM batches WHERE status = 'ACTIVE' ORDER BY start_ingest_time asc LIMIT 1";
+    "SELECT batch_id FROM batches WHERE status = 'ACTIVE' ORDER BY start_ingest_time desc LIMIT 100 OFFSET 3;";
   try {
     const result = await simpleQuery(query);
     return result;
