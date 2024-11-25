@@ -38,10 +38,10 @@ exports.getAllBatches = async function () {
 };
 
 // Function to insert a new batch
-exports.insertIntoBatches = async function (batchId, forecast_time, batchData) {
+exports.insertNewBatchIfNotExists  = async function (batchId, forecast_time) {
   const query =
-    "INSERT INTO batches (batch_id, forecast_time, number_of_rows, status) VALUES (?, ?, ?, ?)";
-  const bindings = [batchId, new Date(forecast_time), batchData?.length || 0, "RUNNING"];
+    "INSERT IGNORE INTO batches (batch_id, forecast_time, number_of_rows, status) VALUES (?, ?, ?, ?)";
+  const bindings = [batchId, new Date(forecast_time), 0, "RUNNING"];
   try {
     return await execQuery(query, bindings);
   } catch (err) {
@@ -99,10 +99,10 @@ exports.getInactiveBatchCount = async function () {
   }
 };
 
-exports.updateEndIngestTime = async function (batchId) {
+exports.updateBatchMetadata = async function (batchId, total_records) {
   const query =
-    "UPDATE batches SET end_ingest_time = NOW(), status = 'ACTIVE' WHERE batch_id = ?";
-  const bindings = [batchId];
+    "UPDATE batches SET number_of_rows = ?, end_ingest_time = NOW(), status = 'ACTIVE' WHERE batch_id = ?";
+  const bindings = [total_records,batchId];
 
   try {
     await execQuery(query, bindings);

@@ -19,7 +19,7 @@ const connection = () => {
       if (err) {
         reject(err);
       } else {
-        console.log("MySQL pool connected: threadId " + connection.threadId);
+        // console.log("MySQL pool connected: threadId " + connection.threadId);
         const query = (sql, bindings = []) => {
           return new Promise((resolve, reject) => {
             connection.query(sql, bindings, (err, result) => {
@@ -32,7 +32,7 @@ const connection = () => {
         const release = () => {
           return new Promise((resolve) => {
             connection.release();
-            console.log("MySQL pool released: threadId " + connection.threadId);
+            // console.log("MySQL pool released: threadId " + connection.threadId);
             resolve();
           });
         };

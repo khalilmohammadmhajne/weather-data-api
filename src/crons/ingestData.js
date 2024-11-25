@@ -2,11 +2,11 @@ require("dotenv").config();
 const axios = require("axios");
 const {
   getBatch,
-  insertIntoBatches,
+  insertNewBatchIfNotExists ,
   getOldestActiveBatches,
   getRunningBatch,
   deactivateBatch,
-  updateEndIngestTime,
+  updateBatchMetadata,
 } = require("../queries/batchesQueries");
 const {
   insertWeatherData,
@@ -66,7 +66,7 @@ const storeBatch = async (batchId, forecast_time) => {
     const existingBatch = await getBatch(batchId);
 
     if (existingBatch.length == 0) {
-      await insertIntoBatches(batchId, forecast_time);
+      await insertNewBatchIfNotExists (batchId, forecast_time);
       console.log(`Successfully stored batch ${batchId}.`);
     } else {
       console.log(`Batch ${batchId} already exists. Skipping insert.`);
@@ -126,7 +126,7 @@ const fetchAndProcessWeatherData = async (batches) => {
 
       console.log(`Fetched data for batch ${batch_id}, total records: ${weatherData.length}`);
 
-      await updateEndIngestTime(batch_id);
+      await updateBatchMetadata(batch_id);
       await cleanUpOldBatches();
     } catch (error) {
       console.error(`Error processing batch ${batch_id}:`, error.message);
