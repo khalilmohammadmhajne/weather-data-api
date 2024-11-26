@@ -1,17 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const { getAllBatches } = require("../queries/batchesQueries");
+const { NotFoundError } = require("../utils/errors");
 
-router.get("/", async (req, res) => {
+router.get("/", async (_ , res, next) => {
   try {
     const batches = await getAllBatches();
     if (!batches || batches.length === 0) {
-      return res.status(404).json({ message: "No batches found." });
+      return next(new NotFoundError("No batches found."));
     }
     res.status(200).json(batches);
+    
   } catch (error) {
-    console.error("Error fetching batches:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error fetching batches");
+    next(error);
   }
 });
 

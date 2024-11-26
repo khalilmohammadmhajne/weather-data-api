@@ -1,4 +1,4 @@
-const { execQuery, simpleQuery } = require("../db/dbPool");
+const { execQuery, simpleQuery } = require("../db/queryExecutor");
 
 // Function to check if a batch exists
 exports.getBatch = async function (batchId) {
@@ -13,17 +13,18 @@ exports.getBatch = async function (batchId) {
   }
 };
 
-exports.getRunningBatch = async function (batchId) {
+exports.isBatchRunning = async function (batchId) {
   const query = "SELECT * FROM batches WHERE batch_id = ? and status = 'RUNNING'";
   const bindings = [batchId];
   try {
     const result = await simpleQuery(query, bindings);
-    return result;
+    return result.length > 0; // If there are rows, return true, else false
   } catch (err) {
     console.error("Error checking batch existence:", err.message);
     throw err;
   }
 };
+
 
 // Function to check if a batch exists
 exports.getAllBatches = async function () {
@@ -107,7 +108,7 @@ exports.updateBatchMetadata = async function (batchId, total_records) {
   try {
     await execQuery(query, bindings);
   } catch (err) {
-    console.error("Error updating end_ingest_time:", err.message);
+    console.error("Error updating batch metadata:", err.message);
     throw err;
   }
 };

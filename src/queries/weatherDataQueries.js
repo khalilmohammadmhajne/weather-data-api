@@ -1,4 +1,4 @@
-const { execQuery, simpleQuery } = require("../db/dbPool");
+const { execQuery, simpleQuery } = require("../db/queryExecutor");
 
 // Function to insert weather data into the database
 exports.insertWeatherData = async function (batchId, forecast_time, batchData) {

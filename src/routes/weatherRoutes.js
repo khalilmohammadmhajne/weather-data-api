@@ -4,54 +4,46 @@ const {
   getSummarizedWeatherData,
 } = require("../queries/weatherDataQueries");
 const router = express.Router();
+const { BadRequestError, NotFoundError } = require("../utils/errors");
 
 // Route to handle the request to fetch weather data from the database
-router.get("/data", async (req, res) => {
+router.get("/data", async (req, res, next) => {
   const { lat, lon } = req.query;
 
   if (!lat || !lon) {
-    return res
-      .status(400)
-      .json({ message: "Latitude and Longitude are required." });
+    return next(new BadRequestError("Latitude and Longitude are required."));
   }
 
   try {
     const weatherData = await getWeatherData(lat, lon);
 
     if (weatherData?.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No weather data found for the specified location." });
+      return next(new NotFoundError("No weather data found for the specified location."));
     }
+
     res.status(200).json(weatherData);
   } catch (error) {
-    console.error("Error fetching and inserting weather data:", error.message);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch and insert weather data." });
+    console.error("Error fetching weather data");
+    next(error);
   }
 });
 
 // Route to summarize weather data for a specific location
-router.get("/summarize", async (req, res) => {
+router.get("/summarize", async (req, res, next) => {
   const { lat, lon } = req.query;
 
   if (!lat || !lon) {
-    return res
-      .status(400)
-      .json({ message: "Latitude and Longitude are required." });
+    return next(new BadRequestError("Latitude and Longitude are required."));
   }
 
   try {
-    const summerizedWeatherData = await getSummarizedWeatherData(lat, lon);
+    const summarizedWeatherData = await getSummarizedWeatherData(lat, lon);
 
-    if (summerizedWeatherData?.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No weather data found for the specified location." });
+    if (summarizedWeatherData?.length === 0) {
+      return next(new NotFoundError("No weather data found for the specified location."));
     }
 
-    const summarizedData = summerizedWeatherData.map((row) => ({
+    const summarizedData = summarizedWeatherData.map((row) => ({
       max: {
         Temperature: row.max_temperature,
         Precipitation_rate: row.max_precipitation_rate,
@@ -71,8 +63,8 @@ router.get("/summarize", async (req, res) => {
 
     res.status(200).json(summarizedData);
   } catch (error) {
-    console.error("Error summarizing weather data:", error.message);
-    res.status(500).json({ message: "Failed to summarize weather data." });
+    console.error("Error summarizing weather data");
+    next(error);
   }
 });
 
