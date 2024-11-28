@@ -47,8 +47,7 @@ exports.getSummarizedWeatherData = async function (latitude, longitude) {
                     MIN(humidity) AS min_humidity,
                     AVG(humidity) AS avg_humidity
                 FROM weather_data
-                WHERE latitude = ? AND longitude = ?
-                ORDER BY day DESC;
+                WHERE latitude = ? AND longitude = ?;
                 `;
   const bindings = [latitude, longitude];
 
