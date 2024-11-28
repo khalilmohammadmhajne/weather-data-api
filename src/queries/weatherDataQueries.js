@@ -25,7 +25,7 @@ exports.insertWeatherData = async function (batchId, forecast_time, batchData) {
 // Fetching weather data from the database by lat and long
 exports.getWeatherData = async function (latitude, longitude) {
   const query =
-    "SELECT * FROM weather_data WHERE latitude = ? AND longitude = ?";
+    "SELECT forecast_time, temperature, precipitation_rate, humidity FROM weather_data WHERE latitude = ? AND longitude = ?";
   const bindings = [latitude, longitude];
   try {
     return await simpleQuery(query, bindings);
