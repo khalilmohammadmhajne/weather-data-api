@@ -118,7 +118,7 @@ npm run test
 
 ## Production Hosting URL
 
-The service was deployed, you can use it through the following URL:
+The service was deployed on VM instance, you can use it through the following URL:
 
 ```text
 http://35.225.213.117/
