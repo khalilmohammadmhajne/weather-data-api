@@ -37,7 +37,6 @@ exports.getWeatherData = async function (latitude, longitude) {
 // Fetching weather data from the database by lat and long
 exports.getSummarizedWeatherData = async function (latitude, longitude) {
   const query = `SELECT 
-                    DATE(forecast_time) AS day,
                     MAX(temperature) AS max_temperature,
                     MIN(temperature) AS min_temperature,
                     AVG(temperature) AS avg_temperature,
@@ -49,7 +48,6 @@ exports.getSummarizedWeatherData = async function (latitude, longitude) {
                     AVG(humidity) AS avg_humidity
                 FROM weather_data
                 WHERE latitude = ? AND longitude = ?
-                GROUP BY DATE(forecast_time)
                 ORDER BY day DESC;
                 `;
   const bindings = [latitude, longitude];
