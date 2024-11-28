@@ -6,6 +6,11 @@ module.exports = {
         env_file: ".env"
       },
       {
+        name: "startServer",
+        script: "./src/startServer.js",
+        env_file: ".env"
+      },
+      {
         name: "batchesCron",
         script: "npm run batchesCron",
         env_file: ".env"
